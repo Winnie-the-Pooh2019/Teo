@@ -4,6 +4,8 @@ import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
+import javafx.scene.control.Alert
+import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
@@ -45,40 +47,31 @@ data class WorkPlan(
 
 )
 class HelloController : Initializable {
-    @FXML
-    private lateinit var welcomeText: Label
+    @FXML private lateinit var welcomeText: Label
 
-    @FXML
-    private lateinit var table1: TableView<ProjectAnalog>
+    @FXML private lateinit var table1: TableView<ProjectAnalog>
 
-    @FXML
-    private lateinit var quality: TableColumn<ProjectAnalog, String>
+    @FXML private lateinit var quality: TableColumn<ProjectAnalog, String>
 
-    @FXML
-    private lateinit var valuable: TableColumn<ProjectAnalog, String>
+    @FXML private lateinit var valuable: TableColumn<ProjectAnalog, String>
 
-    @FXML
-    private lateinit var projX: TableColumn<ProjectAnalog, String>
+    @FXML private lateinit var projX: TableColumn<ProjectAnalog, String>
 
-    @FXML
-    private lateinit var projBX: TableColumn<ProjectAnalog, String>
+    @FXML private lateinit var projBX: TableColumn<ProjectAnalog, String>
 
-    @FXML
-    private lateinit var analogX: TableColumn<ProjectAnalog, String>
+    @FXML private lateinit var analogX: TableColumn<ProjectAnalog, String>
 
-    @FXML
-    private lateinit var analogBX: TableColumn<ProjectAnalog, String>
+    @FXML private lateinit var analogBX: TableColumn<ProjectAnalog, String>
 
-    @FXML
-    private lateinit var j1: TextField
+    @FXML private lateinit var j1: TextField
 
-    @FXML
-    private lateinit var j2: TextField
+    @FXML private lateinit var j2: TextField
 
-    @FXML
-    private lateinit var result1: TextField
+    @FXML private lateinit var result1: TextField
 
-    @FXML
+    @FXML private lateinit var calculate1: Button
+
+//    @FXML
 //    private lateinit var analogBX: TableColumn<ProjectAnalog, String>
 
     private val projectAnalogs: ObservableList<ProjectAnalog> = FXCollections.observableArrayList(
@@ -101,7 +94,19 @@ class HelloController : Initializable {
 
     private fun onEditCommit(it: TableColumn.CellEditEvent<ProjectAnalog, String>) {
         val pos = it.tablePosition
+
+        if (it.newValue.toDoubleOrNull() == null) {
+            Alert(Alert.AlertType.ERROR, "Input data is not correct").show()
+            calculate1.isDisable = true
+            projectAnalogs[pos.row].changeValue(pos.column, "")
+            table1.refresh()
+
+            return
+        }
+
+        calculate1.isDisable = false
         projectAnalogs[pos.row].changeValue(pos.column, it.newValue)
+        table1.refresh()
         println("edited row = ${it.rowValue}")
     }
 
@@ -124,6 +129,9 @@ class HelloController : Initializable {
 
         analogBX.cellValueFactory = PropertyValueFactory("analogXB")
 
+        table1.columns.forEach {
+            it.style += "-fx-alignment: CENTER;"
+        }
         table1.items = projectAnalogs
     }
 
@@ -137,6 +145,7 @@ class HelloController : Initializable {
     }
 
     fun calculate1() {
+
         projectAnalogs.forEach {
             it.analogXB = (it.analogX.toInt() * it.valuable.toDouble()).toString()
             it.projectXB = (it.projectX.toInt() * it.valuable.toDouble()).toString()
