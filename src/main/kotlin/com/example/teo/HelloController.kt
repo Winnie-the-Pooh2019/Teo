@@ -39,6 +39,11 @@ data class ProjectAnalog(
         }
     }
 }
+
+data class WorkPlan(
+    var description: String,
+
+)
 class HelloController : Initializable {
     @FXML
     private lateinit var welcomeText: Label
@@ -72,6 +77,9 @@ class HelloController : Initializable {
 
     @FXML
     private lateinit var result1: TextField
+
+    @FXML
+//    private lateinit var analogBX: TableColumn<ProjectAnalog, String>
 
     private val projectAnalogs: ObservableList<ProjectAnalog> = FXCollections.observableArrayList(
         ProjectAnalog("Удобство работы"),
